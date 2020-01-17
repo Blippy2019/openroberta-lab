@@ -8,9 +8,9 @@
  */
 
 define(['exports', 'simulation.scene', 'simulation.math', 'program.controller', 'simulation.constants', 'util', 'program.controller',
-    'interpreter.interpreter', 'interpreter.robotMbedBehaviour', 'volume-meter', 'simulation.constants', 'jquery'
+    'interpreter.interpreter', 'interpreter.robotMbedBehaviour', 'volume-meter', 'program.model', 'guiState.controller', 'simulation.constants', 'jquery'
 ], function(exports, Scene, SIMATH, ROBERTA_PROGRAM, CONST, UTIL, PROGRAM_C,
-    SIM_I, MBED_R, Volume, C, $) {
+    SIM_I, MBED_R, Volume, PROGRAM, GUISTATE_C, C, $) {
 
     var interpreters;
     var scene;
@@ -629,6 +629,16 @@ define(['exports', 'simulation.scene', 'simulation.math', 'program.controller', 
                     $("#svg" + robotIndex).hide();
                     robotIndex = i;
                     $("#svg" + robotIndex).show();
+                    //Loads program when double clicking on robot
+                    PROGRAM.loadProgramFromListing(robots[robotIndex].savedName,GUISTATE_C.getUserAccountName(),GUISTATE_C.getUserAccountName(),function(result){
+                        result.programShared = false;
+                        result.name = robots[robotIndex].savedName;
+                        GUISTATE_C.setProgram(result, null);
+                        GUISTATE_C.setProgramXML(result.programText);
+                        GUISTATE_C.setConfigurationXML(result.configText);
+                        PROGRAM_C.reloadProgram();
+                        PROGRAM_C.reloadProgram();
+                    });
                     $("#robotIndex")[0][i].selected = true;
                     break;
                 }
@@ -835,6 +845,16 @@ define(['exports', 'simulation.scene', 'simulation.math', 'program.controller', 
             $("#svg" + robotIndex).hide();
             robotIndex = e.target.selectedIndex;
             $("#svg" + robotIndex).show();
+            //Use the loadProgramFromListing function to load the program and config for each bot
+            PROGRAM.loadProgramFromListing(robots[robotIndex].savedName,GUISTATE_C.getUserAccountName(),GUISTATE_C.getUserAccountName(),function(result){
+                result.programShared = false;
+                result.name = robots[robotIndex].savedName;
+                GUISTATE_C.setProgram(result, null);
+                GUISTATE_C.setProgramXML(result.programText);
+                GUISTATE_C.setConfigurationXML(result.configText);
+                PROGRAM_C.reloadProgram();
+                PROGRAM_C.reloadProgram();
+            });
         }).change();
     }
 
